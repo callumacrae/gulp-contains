@@ -1,0 +1,32 @@
+{
+  "name": "gulp-contains",
+  "version": "1.0.0",
+  "description": "Throws an error if a string is found.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/callumacrae/gulp-contains"
+  },
+  "keywords": [
+    "gulp",
+    "string",
+    "gulpplugin"
+  ],
+  "author": "Callum Macrae <callum@macr.ae>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/callumacrae/gulp-contains/issues"
+  },
+  "homepage": "https://github.com/callumacrae/gulp-contains",
+  "dependencies": {
+    "gulp-util": "^3.0.3",
+    "through2": "^0.6.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "should": "^5.0.0"
+  }
+}
