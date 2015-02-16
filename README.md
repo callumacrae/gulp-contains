@@ -1,4 +1,4 @@
-# gulp-contains
+# gulp-contains [![Build Status](https://travis-ci.org/callumacrae/gulp-contains.svg?branch=master)](https://travis-ci.org/callumacrae/gulp-contains)
 
 Throws an error or calls a callback if a given string is found in a file.
 
