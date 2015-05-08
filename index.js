@@ -13,6 +13,11 @@ module.exports = function gulpContains(options) {
 		cb(new gutil.PluginError('gulp-contains', error));
 	};
 
+	options.onNotFound = options.onNotFound || function (string, file, cb) {
+		var error = 'Your file does not contains "' + string + '", it should.';
+		cb(new gutil.PluginError('gulp-contains', error));
+	};
+
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
@@ -34,6 +39,12 @@ module.exports = function gulpContains(options) {
 		if (found) {
 			// You can return false to ignore the error
 			var cancel = options.onFound(found, file, cb);
+
+			if (cancel !== false) {
+				return;
+			}
+		} else {
+			var cancel = options.onNotFound(found, file, cb);
 
 			if (cancel !== false) {
 				return;
