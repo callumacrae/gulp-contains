@@ -45,6 +45,13 @@ gulp.task('default', function () {
 				// cb is the through2 callback
 
 				// return false to continue the stream
+			},
+			onNotFound: function (string, file, cb) {
+				// string is the string that was found
+				// file is the vinyl file object
+				// cb is the through2 callback
+
+				// return false to continue the stream
 			}
 		}));
 });
