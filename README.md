@@ -57,6 +57,22 @@ gulp.task('default', function () {
 });
 ```
 
+Regex
+
+```
+    .pipe(plugins.contains({
+      search: /([ \t]*\n){4,}/, // Looks for multiple empty lines
+      reg: true,
+      onFound: function(string, file, cb) {
+        // console.log('TOC IS Found in user style.css ', string);
+        gutil.log(gutil.colors.red(filename(file), 'Not cleaned'));
+      },
+      onNotFound: function(string, file, cb) {
+        gutil.log(gutil.colors.green(filename(file), 'Is clean'));
+      }
+    }))
+```
+
 ## License
 
 Released under the MIT license.
