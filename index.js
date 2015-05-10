@@ -5,20 +5,22 @@ var gutil = require('gulp-util');
 
 module.exports = function gulpContains(options) {
 	if (typeof options === 'string' || Array.isArray(options)) {
-		options = { search: options };
+		options = {
+			search: options
+		};
 	}
 
-	options.onFound = options.onFound || function (string, file, cb) {
+	options.onFound = options.onFound || function(string, file, cb) {
 		var error = 'Your file contains "' + string + '", it should not.';
 		cb(new gutil.PluginError('gulp-contains', error));
 	};
 
-	options.onNotFound = options.onNotFound || function (string, file, cb) {
-		var error = 'Your file does not contains "' + string + '", it should.';
-		cb(new gutil.PluginError('gulp-contains', error));
+	options.onNotFound = options.onNotFound || function(string, file, cb) {
+		// var error = 'Your file does not contains "' + string + '", it should.';
+		// cb(new gutil.PluginError('gulp-contains', error));
 	};
 
-	return through.obj(function (file, enc, cb) {
+	return through.obj(function(file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
 			return;
@@ -34,21 +36,40 @@ module.exports = function gulpContains(options) {
 			return;
 		}
 
-		var found = stringContains(file.contents.toString(enc), options.search);
+		var found = false;
+
+		if (!options.reg) {
+			found = stringContains(file.contents.toString(enc), options.search);
+		} else {
+			// if (typeof options.search === 'string') {
+				var pattern = new RegExp(options.search);
+				var contents = String(file.contents);
+
+				var matches = contents.match(pattern);
+				if (matches) {
+					found = true;
+				}
+
+			// } else if (!options.search instanceof RegExp) {
+			// 	throw new gutil.PluginError('gulp-check', 'Pattern must be a string or regular expression');
+			// }
+		}
 
 		if (found) {
 			// You can return false to ignore the error
 			var cancel = options.onFound(found, file, cb);
+			// console.log('Found', file.path);
 
-			if (cancel !== false) {
-				return;
-			}
+			// if (cancel !== false) {
+			// 	return;
+			// }
 		} else {
+
 			var cancel = options.onNotFound(found, file, cb);
 
-			if (cancel !== false) {
-				return;
-			}
+			// if (cancel !== false) {
+			// 	return;
+			// }
 		}
 
 		cb(null, file);
