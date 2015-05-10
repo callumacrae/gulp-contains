@@ -59,7 +59,7 @@ gulp.task('default', function () {
 
 Regex
 
-```
+```js
     .pipe(plugins.contains({
       search: /([ \t]*\n){4,}/, // Looks for multiple empty lines
       reg: true,
