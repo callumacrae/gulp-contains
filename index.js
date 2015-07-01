@@ -42,22 +42,20 @@ module.exports = function gulpContains(options) {
             found = stringContains(file.contents.toString(enc), options.search);
         } else {
             var pattern = new RegExp(options.search);
-            var contents = String(file.contents);
+            var contents = file.contents.toString(enc);
 
-            var matches = contents.match(pattern);
-            if (matches) {
-                found = true;
-            }
+            found = contents.match(pattern);
         }
 
+        var cancel = false;
         if (found) {
-            var cancel = options.onFound(found, file, cb);
+            cancel = options.onFound(found, file, cb);
 
             if (cancel === true) {
                 return;
             }
         } else {
-            var cancel = options.onNotFound(file, cb);
+            cancel = options.onNotFound(file, cb);
 
             if (cancel === true) {
                 return;
