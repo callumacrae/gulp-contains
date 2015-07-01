@@ -47,18 +47,18 @@ module.exports = function gulpContains(options) {
             found = contents.match(pattern);
         }
 
-        var cancel = false;
+        var skip = false;
         if (found) {
-            cancel = options.onFound(found, file, cb);
+            skip = options.onFound(found, file, cb);
 
-            if (cancel === true) {
-                return;
+            if (skip === true) {
+                return cb();
             }
         } else {
-            cancel = options.onNotFound(file, cb);
+            skip = options.onNotFound(file, cb);
 
-            if (cancel === true) {
-                return;
+            if (skip === true) {
+                return cb();
             }
         }
 
