@@ -6,8 +6,7 @@ var gutil = require('gulp-util');
 module.exports = function gulpContains(options) {
     if (typeof options === 'string' || Array.isArray(options)) {
         options = {
-            search: options,
-            regex: false
+            search: options
         };
     }
 
@@ -36,43 +35,31 @@ module.exports = function gulpContains(options) {
             return;
         }
 
-        var found = false;
-
-        if (!options.regex) {
-            found = stringContains(file.contents.toString(enc), options.search);
-        } else {
-            var pattern = new RegExp(options.search);
-            var contents = file.contents.toString(enc);
-
-            found = contents.match(pattern);
-        }
+        var found = stringMatches(file.contents.toString(enc), options.search);
 
         var skip = false;
         if (found) {
             skip = options.onFound(found, file, cb);
-
-            if (skip === true) {
-                return cb();
-            }
         } else {
             skip = options.onNotFound(file, cb);
-
-            if (skip === true) {
-                return cb();
-            }
+        }
+        if (skip === true) {
+            return cb();
         }
 
         cb(null, file);
     });
 };
 
-function stringContains(str, search) {
+function stringMatches(str, search) {
     if (typeof search === 'string') {
         return (str.indexOf(search) !== -1) ? search : false;
+    } else if (search instanceof RegExp) {
+        return str.match(search);
     }
 
     for (var i = 0; i < search.length; i++) {
-        if (stringContains(str, search[i])) {
+        if (stringMatches(str, search[i])) {
             return search[i];
         }
     }

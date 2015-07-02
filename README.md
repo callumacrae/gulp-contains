@@ -28,7 +28,7 @@ gulp.task('default', function () {
 The contains function accepts either a string, regex or an array of strings (any of
 which, when matched, will cause an error to be thrown).
 
-You can also specify an onFound or onNotFound callbacks, in which you can handle the error
+You can also specify onFound or onNotFound callback, in which you can handle the error
 yourself or choose to completely ignore it:
 
 ```js
