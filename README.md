@@ -25,10 +25,10 @@ gulp.task('default', function () {
 });
 ```
 
-The contains function accepts either a string or an array of strings (any of
+The contains function accepts either a string, regex or an array of strings (any of
 which, when matched, will cause an error to be thrown).
 
-You can also specify a callback function, in which you can handle the error
+You can also specify onFound or onNotFound callback, in which you can handle the error
 yourself or choose to completely ignore it:
 
 ```js
@@ -44,10 +44,34 @@ gulp.task('default', function () {
 				// file is the vinyl file object
 				// cb is the through2 callback
 
-				// return false to continue the stream
+				// default: throws an error
+
+				// return false to continue the stream or true to stop the stream
+			},
+			onNotFound: function (file, cb) {
+				// file is the vinyl file object
+				// cb is the through2 callback
+
+				// default: continues the stream
+
+				// return false to continue the stream or true to stop the stream
 			}
 		}));
 });
+```
+
+Regex
+
+```js
+    .pipe(plugins.contains({
+      search: /([ \t]*\n){4,}/, // Looks for multiple empty lines
+      onFound: function(string, file, cb) {
+        gutil.log(gutil.colors.red(filename(file), 'Not cleaned'));
+      },
+      onNotFound: function(file, cb) {
+        gutil.log(gutil.colors.green(filename(file), 'Is clean'));
+      }
+    }))
 ```
 
 ## License

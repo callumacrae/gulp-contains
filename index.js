@@ -4,56 +4,65 @@ var through = require('through2');
 var gutil = require('gulp-util');
 
 module.exports = function gulpContains(options) {
-	if (typeof options === 'string' || Array.isArray(options)) {
-		options = { search: options };
-	}
+    if (typeof options === 'string' || Array.isArray(options)) {
+        options = {
+            search: options
+        };
+    }
 
-	options.onFound = options.onFound || function (string, file, cb) {
-		var error = 'Your file contains "' + string + '", it should not.';
-		cb(new gutil.PluginError('gulp-contains', error));
-	};
+    options.onFound = options.onFound || function (string, file, cb) {
+            var error = 'Your file contains "' + string + '", it should not.';
+            cb(new gutil.PluginError('gulp-contains', error));
+        };
 
-	return through.obj(function (file, enc, cb) {
-		if (file.isNull()) {
-			cb(null, file);
-			return;
-		}
+    options.onNotFound = options.onNotFound || function () {
+            return false;
+        };
 
-		if (file.isStream()) {
-			cb(new gutil.PluginError('gulp-contains', 'Streaming not supported'));
-			return;
-		}
+    return through.obj(function (file, enc, cb) {
+        if (file.isNull()) {
+            cb(null, file);
+            return;
+        }
 
-		if (!options.search) {
-			cb(new gutil.PluginError('gulp-contains', 'You did not specify a valid search string'));
-			return;
-		}
+        if (file.isStream()) {
+            cb(new gutil.PluginError('gulp-contains', 'Streaming not supported'));
+            return;
+        }
 
-		var found = stringContains(file.contents.toString(enc), options.search);
+        if (!options.search) {
+            cb(new gutil.PluginError('gulp-contains', 'You did not specify a valid search string'));
+            return;
+        }
 
-		if (found) {
-			// You can return false to ignore the error
-			var cancel = options.onFound(found, file, cb);
+        var found = stringMatches(file.contents.toString(enc), options.search);
 
-			if (cancel !== false) {
-				return;
-			}
-		}
+        var skip = false;
+        if (found) {
+            skip = options.onFound(found, file, cb);
+        } else {
+            skip = options.onNotFound(file, cb);
+        }
+        if (skip === true) {
+            return cb();
+        }
 
-		cb(null, file);
-	});
+        cb(null, file);
+    });
 };
 
-function stringContains(str, search) {
-	if (typeof search === 'string') {
-		return (str.indexOf(search) !== -1) ? search : false;
-	}
+function stringMatches(str, search) {
+    if (typeof search === 'string') {
+        return (str.indexOf(search) !== -1) ? search : false;
+    } else if (search instanceof RegExp) {
+        return str.match(search);
+    }
 
-	for (var i = 0; i < search.length; i++) {
-		if (stringContains(str, search[i])) {
-			return search[i];
-		}
-	}
+    for (var i = 0; i < search.length; i++) {
+        if (stringMatches(str, search[i])) {
+            return search[i];
+        }
+    }
 
-	return false;
+    return false;
 }

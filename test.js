@@ -39,11 +39,24 @@ describe('gulp-contains tests', function () {
 		}, /contains "notfound"/);
 	});
 
-	it('should allow you to pass own error handler', function (done) {
+	it('should accept a regex to find', function () {
+		should.throws(function () {
+			var stream = contains({
+				search: /([A-Z])\w+/g,
+				regex: true
+			});
+
+			stream.write(new gutil.File({
+				contents: new Buffer('this should be Found123!')
+			}));
+		}, /Found123/);
+	});
+
+	it('should allow you to pass onFound callback', function (done) {
 		var stream = contains({
-			search: 'notfound',
+			search: 'found',
 			onFound: function (str) {
-				str.should.equal('notfound');
+				str.should.equal('found');
 				done();
 			}
 		});
@@ -53,15 +66,32 @@ describe('gulp-contains tests', function () {
 		}));
 
 		stream.write(new gutil.File({
-			contents: new Buffer('this should be notfound')
+			contents: new Buffer('this should be found')
 		}));
 	});
 
-	it('should continue the stream when told to', function (done) {
+	it('should allow you to pass onNotFound callback', function (done) {
 		var stream = contains({
 			search: 'notfound',
+			onNotFound: function () {
+				done();
+			}
+		});
+
+		stream.pipe(through.obj(function () {
+			throw new Error('Stream continued! :(');
+		}));
+
+		stream.write(new gutil.File({
+			contents: new Buffer('this should not be found')
+		}));
+	});
+
+	it('should continue the stream when told to (onFound callback)', function (done) {
+		var stream = contains({
+			search: 'found',
 			onFound: function (str) {
-				str.should.equal('notfound');
+				str.should.equal('found');
 				return false;
 			}
 		});
@@ -71,7 +101,24 @@ describe('gulp-contains tests', function () {
 		}));
 
 		stream.write(new gutil.File({
-			contents: new Buffer('this should be notfound')
+			contents: new Buffer('this should be found')
 		}));
-	})
+	});
+
+	it('should continue the stream when told to (onNotFound callback)', function (done) {
+		var stream = contains({
+			search: 'notfound',
+			onNotFound: function () {
+				return false;
+			}
+		});
+
+		stream.pipe(through.obj(function () {
+			done();
+		}));
+
+		stream.write(new gutil.File({
+			contents: new Buffer('this should not be found')
+		}));
+	});
 });
