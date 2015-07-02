@@ -65,7 +65,6 @@ Regex
 ```js
     .pipe(plugins.contains({
       search: /([ \t]*\n){4,}/, // Looks for multiple empty lines
-      regex: true,
       onFound: function(string, file, cb) {
         gutil.log(gutil.colors.red(filename(file), 'Not cleaned'));
       },
