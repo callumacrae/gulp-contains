@@ -25,7 +25,7 @@ gulp.task('default', function () {
 });
 ```
 
-The contains function accepts either a string or an array of strings (any of
+The contains function accepts a string, a regular expression or an array of either (any of
 which, when matched, will cause an error to be thrown).
 
 You can also specify a callback function, in which you can handle the error

@@ -4,7 +4,7 @@ var through = require('through2');
 var gutil = require('gulp-util');
 
 module.exports = function gulpContains(options) {
-	if (typeof options === 'string' || Array.isArray(options)) {
+	if (typeof options === 'string' || options instanceof RegExp || Array.isArray(options)) {
 		options = { search: options };
 	}
 
@@ -29,7 +29,7 @@ module.exports = function gulpContains(options) {
 			return;
 		}
 
-		var found = stringContains(file.contents.toString(enc), options.search);
+		var found = stringMatches(file.contents.toString(enc), options.search);
 
 		if (found) {
 			// You can return false to ignore the error
@@ -44,13 +44,16 @@ module.exports = function gulpContains(options) {
 	});
 };
 
-function stringContains(str, search) {
+function stringMatches(str, search) {
 	if (typeof search === 'string') {
 		return (str.indexOf(search) !== -1) ? search : false;
 	}
+	if (search instanceof RegExp) {
+		return (str.match(search)) ? search : false;
+	}
 
 	for (var i = 0; i < search.length; i++) {
-		if (stringContains(str, search[i])) {
+		if (stringMatches(str, search[i])) {
 			return search[i];
 		}
 	}

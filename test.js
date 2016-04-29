@@ -29,6 +29,16 @@ describe('gulp-contains tests', function () {
 		}, /contains "notfound"/);
 	});
 
+	it('should error on bad files matching regexp', function () {
+		should.throws(function () {
+			var stream = contains(/(notfound)/);
+
+			stream.write(new gutil.File({
+				contents: new Buffer('this should be notfound')
+			}));
+		}, 'Your file contains "/(notfound)/", it should not.');
+	});
+
 	it('should accept array of strings to find', function () {
 		should.throws(function () {
 			var stream = contains(['something', 'notfound', 'something else']);
@@ -37,6 +47,16 @@ describe('gulp-contains tests', function () {
 				contents: new Buffer('this should be notfound')
 			}));
 		}, /contains "notfound"/);
+	});
+
+	it('should accept array of regexps to find', function () {
+		should.throws(function () {
+			var stream = contains([/(notfound)/, /(somethingelse)/]);
+
+			stream.write(new gutil.File({
+				contents: new Buffer('this should be notfound')
+			}));
+		}, 'Your file contains "/(notfound)/", it should not.');
 	});
 
 	it('should allow you to pass own error handler', function (done) {
