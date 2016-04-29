@@ -59,6 +59,16 @@ describe('gulp-contains tests', function () {
 		}, 'Your file contains "/(notfound)/", it should not.');
 	});
 
+	it('should accept mixed array of strings and regexps to find', function () {
+		should.throws(function () {
+			var stream = contains(["some string", /(notfound)/]);
+
+			stream.write(new gutil.File({
+				contents: new Buffer('this should be notfound')
+			}));
+		}, 'Your file contains "/(notfound)/", it should not.');
+	});
+
 	it('should allow you to pass own error handler', function (done) {
 		var stream = contains({
 			search: 'notfound',
