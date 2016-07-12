@@ -49,6 +49,16 @@ describe('gulp-contains tests', function () {
 		}, /contains "notfound"/);
 	});
 
+	it('should return the string matched by a RegExp', function () {
+		should.throws(function () {
+			var stream = contains(/should .* matched string/);
+
+			stream.write(new gutil.File({
+				contents: new Buffer('this should return the matched string from the RegExp')
+			}));
+		}, /contains "should return the matched string"/);
+	});
+
 	it('should accept array of regexps to find', function () {
 		should.throws(function () {
 			var stream = contains([/(notfound)/, /(somethingelse)/]);
