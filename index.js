@@ -49,7 +49,8 @@ function stringMatches(str, search) {
 		return (str.indexOf(search) !== -1) ? search : false;
 	}
 	if (search instanceof RegExp) {
-		return (str.match(search)) ? search : false;
+		// if the RegExp is found, return the matched string
+		return (search.test(str)) ? search.exec(str)[0] : false;
 	}
 
 	for (var i = 0; i < search.length; i++) {
