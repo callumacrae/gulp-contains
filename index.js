@@ -13,9 +13,9 @@ module.exports = function gulpContains(options) {
 		cb(new gutil.PluginError('gulp-contains', error));
 	};
 
-	options.highWaterMark = { highWaterMark: options.highWaterMark } || {};
+	var throughOptions = options.highWaterMark ? { highWaterMark: options.highWaterMark } : {}
 
-	return through.obj(options.highWaterMark, function (file, enc, cb) {
+	return through.obj(throughOptions, function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
 			return;
