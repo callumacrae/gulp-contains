@@ -9,7 +9,10 @@ module.exports = function gulpContains(options) {
 	}
 
 	options.onFound = options.onFound || function (string, file, cb) {
-		var error = 'Your file contains "' + string + '", it should not.';
+		var error = 'The file `{0}` contains "{1}", it should not.'
+			.replace('{0}', file.path.replace(file.base, ''))
+			.replace('{1}', string);
+
 		cb(new gutil.PluginError('gulp-contains', error));
 	};
 
