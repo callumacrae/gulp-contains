@@ -1,9 +1,9 @@
 'use strict';
 
 var contains = require('./');
-var gutil = require('gulp-util');
 var should = require('should');
 var through = require('through2');
+var vinyl = require('vinyl');
 
 describe('gulp-contains tests', function () {
 	it('shouldn\'t break good files', function (done) {
@@ -14,7 +14,7 @@ describe('gulp-contains tests', function () {
 			done();
 		});
 
-		stream.write(new gutil.File({
+		stream.write(new vinyl({
 			contents: new Buffer('something')
 		}));
 	});
@@ -23,7 +23,7 @@ describe('gulp-contains tests', function () {
 		should.throws(function () {
 			var stream = contains('notfound');
 
-			stream.write(new gutil.File({
+			stream.write(new vinyl({
 				contents: new Buffer('this should be notfound')
 			}));
 		}, /contains "notfound"/);
@@ -33,7 +33,7 @@ describe('gulp-contains tests', function () {
 		should.throws(function () {
 			var stream = contains(/(notfound)/);
 
-			stream.write(new gutil.File({
+			stream.write(new vinyl({
 				contents: new Buffer('this should be notfound')
 			}));
 		}, 'Your file contains "/(notfound)/", it should not.');
@@ -43,7 +43,7 @@ describe('gulp-contains tests', function () {
 		should.throws(function () {
 			var stream = contains(['something', 'notfound', 'something else']);
 
-			stream.write(new gutil.File({
+			stream.write(new vinyl({
 				contents: new Buffer('this should be notfound')
 			}));
 		}, /contains "notfound"/);
@@ -53,7 +53,7 @@ describe('gulp-contains tests', function () {
 		should.throws(function () {
 			var stream = contains([/(notfound)/, /(somethingelse)/]);
 
-			stream.write(new gutil.File({
+			stream.write(new vinyl({
 				contents: new Buffer('this should be notfound')
 			}));
 		}, 'Your file contains "/(notfound)/", it should not.');
@@ -63,7 +63,7 @@ describe('gulp-contains tests', function () {
 		should.throws(function () {
 			var stream = contains(["some string", /(notfound)/]);
 
-			stream.write(new gutil.File({
+			stream.write(new vinyl({
 				contents: new Buffer('this should be notfound')
 			}));
 		}, 'Your file contains "/(notfound)/", it should not.');
@@ -82,7 +82,7 @@ describe('gulp-contains tests', function () {
 			throw new Error('Stream continued! :(');
 		}));
 
-		stream.write(new gutil.File({
+		stream.write(new vinyl({
 			contents: new Buffer('this should be notfound')
 		}));
 	});
@@ -100,7 +100,7 @@ describe('gulp-contains tests', function () {
 			done();
 		}));
 
-		stream.write(new gutil.File({
+		stream.write(new vinyl({
 			contents: new Buffer('this should be notfound')
 		}));
 	})
