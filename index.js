@@ -1,7 +1,7 @@
 'use strict';
 
 var through = require('through2');
-var gutil = require('gulp-util');
+var pluginError = require('plugin-error');
 
 module.exports = function gulpContains(options) {
 	if (typeof options === 'string' || options instanceof RegExp || Array.isArray(options)) {
@@ -10,7 +10,7 @@ module.exports = function gulpContains(options) {
 
 	options.onFound = options.onFound || function (string, file, cb) {
 		var error = 'Your file contains "' + string + '", it should not.';
-		cb(new gutil.PluginError('gulp-contains', error));
+		cb(new pluginError('gulp-contains', error));
 	};
 
 	return through.obj(function (file, enc, cb) {
@@ -20,12 +20,12 @@ module.exports = function gulpContains(options) {
 		}
 
 		if (file.isStream()) {
-			cb(new gutil.PluginError('gulp-contains', 'Streaming not supported'));
+			cb(new pluginError('gulp-contains', 'Streaming not supported'));
 			return;
 		}
 
 		if (!options.search) {
-			cb(new gutil.PluginError('gulp-contains', 'You did not specify a valid search string'));
+			cb(new pluginError('gulp-contains', 'You did not specify a valid search string'));
 			return;
 		}
 
