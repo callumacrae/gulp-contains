@@ -13,7 +13,9 @@ module.exports = function gulpContains(options) {
 		cb(new pluginError('gulp-contains', error));
 	};
 
-	return through.obj(function (file, enc, cb) {
+	var throughOptions = options.highWaterMark ? { highWaterMark: options.highWaterMark } : {}
+
+	return through.obj(throughOptions, function (file, enc, cb) {
 		if (file.isNull()) {
 			cb(null, file);
 			return;
